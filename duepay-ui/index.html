@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DuePay - Dashboard</title>
+    
+    <!-- Links de Fonts e Ícones -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏪</text></svg>">
+
+    <!-- CSS (Sem alterações) -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-light-bg">
+
+    <!-- Fundo escuro para o menu mobile -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop hidden"></div>
+
+    <!-- Container Principal da Aplicação -->
+    <div class="app-container">
+        
+        <!-- =======================
+             BARRA LATERAL (SIDEBAR)
+             ======================== -->
+        <aside id="sidebar" class="sidebar">
+            
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-store"></i> 
+                <span>DuePay</span>
+            </div>
+
+            <nav class="nav-menu">
+                <!-- ATUALIZAÇÃO: Adicionado 'data-nav-target' -->
+                <a href="#" class="nav-link active" data-nav-target="#page-dashboard">
+                    <i class="fa-solid fa-gauge"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link" data-nav-target="#page-vendas">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Vendas</span>
+                </a>
+                <a href="#" class="nav-link" data-nav-target="#page-clientes">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+                <a href="#" class="nav-link" data-nav-target="#page-produtos">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Produtos</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- =======================
+             CONTEÚDO PRINCIPAL (MAIN)
+             ======================== -->
+        <main class="main-content" role="main">
+
+            <!-- Cabeçalho -->
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1 id="pageTitle" class="card-title" style="margin: 0;">Dashboard</h1>
+                </div>
+                <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </header>
+
+            <!-- ==================================
+                 CONTEÚDO DAS PÁGINAS
+                 ================================== -->
+
+            <!-- PÁGINA: DASHBOARD -->
+            <div id="page-dashboard" class="page-content">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <h3>Total de Clientes</h3>
+                        <p id="kpi-total-clientes">0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Total de Produtos</h3>
+                        <p id="kpi-total-produtos">0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Vendas (Hoje)</h3>
+                        <p id="kpi-vendas-hoje">0</p>
+                    </div>
+                </div>
+                <section class="card" aria-labelledby="ultimas-vendas-title">
+                    <h2 id="ultimas-vendas-title" class="card-title">Últimas Vendas</h2>
+                    <div class="table-wrapper">
+                        <table class="table" aria-describedby="ultimas-vendas-title">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Produto(s)</th>
+                                    <th>Valor Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesDashboardTbody">
+                                <tr>
+                                    <td colspan="4" class="empty-table-cell">
+                                        Nenhuma venda registrada hoje.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PÁGINA: VENDAS -->
+            <div id="page-vendas" class="page-content hidden">
+                <div class="page-header">
+                    <h1 class="card-title" style="margin: 0;">Histórico de Vendas</h1>
+                    <!-- ATUALIZAÇÃO: Adicionado 'data-modal-target' -->
+                    <button class="btn btn-primary" data-modal-target="#saleModal">
+                        + Nova Venda
+                    </button>
+                </div>
+                <section class="card">
+                    <div class="context-search-bar">
+                        <!-- ATUALIZAÇÃO: Adicionado 'data-search-target' -->
+                        <input type="search" placeholder="Buscar por cliente ou ID..." data-search-target="#salesTableBody">
+                        <i class="fa-solid fa-search"></i>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID Venda</th>
+                                    <th>Cliente</th>
+                                    <th>Itens</th>
+                                    <th>Valor Total</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-table-cell">Nenhuma venda registrada.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PÁGINA: CLIENTES -->
+            <div id="page-clientes" class="page-content hidden">
+                <div class="page-header">
+                    <h1 class="card-title" style="margin: 0;">Clientes Cadastrados</h1>
+                    <!-- ATUALIZAÇÃO: Adicionado 'data-modal-target' -->
+                    <button class="btn btn-primary" data-modal-target="#clientModal">
+                        + Novo Cliente
+                    </button>
+                </div>
+                <section class="card">
+                    <div class="context-search-bar">
+                        <!-- ATUALIZAÇÃO: Adicionado 'data-search-target' -->
+                        <input type="search" placeholder="Buscar por nome ou email..." data-search-target="#clientsTableBody">
+                        <i class="fa-solid fa-search"></i>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody">
+                                <tr>
+                                    <td colspan="4" class="empty-table-cell">Nenhum cliente cadastrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PÁGINA: PRODUTOS -->
+            <div id="page-produtos" class="page-content hidden">
+                <div class="page-header">
+                    <h1 class="card-title" style="margin: 0;">Estoque de Produtos</h1>
+                    <!-- ATUALIZAÇÃO: Adicionado 'data-modal-target' -->
+                    <button class="btn btn-primary" data-modal-target="#productModal">
+                        + Novo Produto
+                    </button>
+                </div>
+                <section class="card">
+                    <div class="context-search-bar">
+                        <!-- ATUALIZAÇÃO: Adicionado 'data-search-target' -->
+                        <input type="search" placeholder="Buscar por nome do produto..." data-search-target="#productsTableBody">
+                        <i class="fa-solid fa-search"></i>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Preço</th>
+                                    <th>Estoque</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <tr>
+                                    <td colspan="4" class="empty-table-cell">Nenhum produto cadastrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==================================
+         MODAIS (Pop-ups)
+         ================================== -->
+
+    <!-- Modal: Novo Cliente -->
+    <div id="clientModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="card-title" style="margin: 0;">Novo Cliente</h2>
+                <!-- ATUALIZAÇÃO: Adicionado 'data-modal-close' -->
+                <button class="modal-close-btn" data-modal-close>&times;</button>
+            </div>
+            <form id="clientForm">
+                <div class="modal-body">
+                    <!-- ... campos do formulário ... -->
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <!-- *** MUDANÇA AQUI *** -->
+                        <input type="text" id="telefone" name="telefone" class="form-control" placeholder="(XX) XXXXX-XXXX" maxlength="15">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- ATUALIZAÇÃO: Adicionado 'data-modal-close' -->
+                    <button type="button" class="btn btn-light" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Novo Produto -->
+    <div id="productModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="card-title" style="margin: 0;">Novo Produto</h2>
+                <!-- ATUALIZAÇÃO: Adicionado 'data-modal-close' -->
+                <button class="modal-close-btn" data-modal-close>&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="modal-body">
+                    <!-- ... campos do formulário ... -->
+                    <div class="form-group">
+                        <label for="produtoNome">Nome do Produto</label>
+                        <input type="text" id="produtoNome" name="produtoNome" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="produtoPreco">Preço (R$)</label>
+                        <input type="number" id="produtoPreco" name="produtoPreco" class="form-control" step="0.01" min="0.01" placeholder="Ex: 15.50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="produtoEstoque">Estoque</label>
+                        <input type="number" id="produtoEstoque" name="produtoEstoque" class="form-control" step="1" min="0" placeholder="0" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- ATUALIZAÇÃO: Adicionado 'data-modal-close' -->
+                    <button type="button" class="btn btn-light" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Venda -->
+    <div id="saleModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="card-title" style="margin: 0;">Nova Venda</h2>
+                <!-- ATUALIZAÇÃO: Adicionado 'data-modal-close' -->
+                <button class="modal-close-btn" data-modal-close>&times;</button>
+            </div>
+            <form id="saleForm">
+                <div class="modal-body">
+                    <!-- ... campos do formulário ... -->
+                    <div class="form-group">
+                        <label for="saleCliente">Cliente</label>
+                        <input type="text" id="saleCliente" name="saleCliente" class="form-control" placeholder="Nome do Cliente" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="saleProduto">Produto</label>
+                        <input type="text" id="saleProduto" name="saleProduto" class="form-control" placeholder="Nome do Produto" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="saleValor">Valor Total (R$)</label>
+                        <input type="number" id="saleValor" name="saleValor" class="form-control" step="0.01" min="0.01" placeholder="Ex: 25.00" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- ATUALIZAÇÃO: Adicionado 'data-modal-close' -->
+                    <button type="button" class="btn btn-light" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Venda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>
