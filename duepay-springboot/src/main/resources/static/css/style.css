@@ -1,0 +1,58 @@
+/* src/main/resources/static/css/style.css */
+body {
+    background-color: #f8f9fa; /* Fundo cinza claro igual ao print */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Menu Lateral (Sidebar) */
+.sidebar {
+    min-height: 100vh;
+    background-color: #1e293b; /* Azul escuro do seu print */
+    color: white;
+    width: 250px;
+    position: fixed;
+}
+
+.sidebar a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background-color: #3b82f6; /* Azul destaque do botão selecionado */
+    color: white;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Conteúdo Principal */
+.main-content {
+    margin-left: 250px; /* Mesma largura da sidebar */
+    padding: 20px;
+}
+
+.card-stat {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.card-header-custom {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
