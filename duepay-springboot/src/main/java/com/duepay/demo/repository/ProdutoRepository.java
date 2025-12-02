@@ -7,6 +7,9 @@ import java.util.List;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    // Método mágico: O Spring cria o SQL "SELECT * FROM produto WHERE ativo = true"
+    // Busca produtos ativos
     List<Produto> findByAtivoTrue();
+
+    // NOVO: Conta apenas os produtos ativos (para o Card do Dashboard)
+    long countByAtivoTrue();
 }

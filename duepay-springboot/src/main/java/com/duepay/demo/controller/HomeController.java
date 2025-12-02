@@ -22,20 +22,22 @@ public class HomeController {
 
     @GetMapping("/")
     public String dashboard(Model model) {
-        // 1. CARDS TOTAIS
+
+        // 1. CARDS TOTAIS (CORRIGIDO)
         model.addAttribute("totalClientes", clienteRepo.count());
-        model.addAttribute("totalProdutos", produtoRepo.count());
+        // Agora usa o método que ignora os deletados
+        model.addAttribute("totalProdutos", produtoRepo.countByAtivoTrue());
 
         List<Venda> todasVendas = vendaRepo.findAll();
 
         // Soma Faturamento
         double faturamentoTotal = todasVendas.stream()
-                .filter(v -> v.getValorTotal() != null) // Proteção contra nulos
+                .filter(v -> v.getValorTotal() != null)
                 .mapToDouble(Venda::getValorTotal)
                 .sum();
         model.addAttribute("faturamentoTotal", faturamentoTotal);
 
-        // 2. GRÁFICO (Agrupa por Data)
+        // 2. GRÁFICO (Mantivemos igual, agrupando por data)
         Map<LocalDate, Double> vendasPorData = todasVendas.stream()
                 .filter(v -> v.getData() != null && v.getValorTotal() != null)
                 .collect(Collectors.groupingBy(Venda::getData, Collectors.summingDouble(Venda::getValorTotal)));
@@ -54,13 +56,17 @@ public class HomeController {
         model.addAttribute("labelsGrafico", labelsGrafico);
         model.addAttribute("valoresGrafico", valoresGrafico);
 
-        // 3. TOP PRODUTOS (A CORREÇÃO ESTÁ AQUI)
-        // Antes: Venda::getProduto (Pegava o objeto inteiro)
-        // Agora: v -> v.getProduto().getNome() (Pega só o nome do objeto)
+        // 3. TOP PRODUTOS (A GRANDE CORREÇÃO)
+        // Antes: contava linhas (counting). Agora: Soma as quantidades (summingLong)
         Map<String, Long> contagemProdutos = todasVendas.stream()
-                .filter(v -> v.getProduto() != null) // Proteção
-                .collect(Collectors.groupingBy(v -> v.getProduto().getNome(), Collectors.counting()));
+                .filter(v -> v.getProduto() != null)
+                // Agrupa pelo nome E soma a quantidade vendida de cada linha
+                .collect(Collectors.groupingBy(
+                        v -> v.getProduto().getNome(),
+                        Collectors.summingLong(v -> v.getQuantidade() != null ? v.getQuantidade() : 0)
+                ));
 
+        // Ordena do maior para o menor
         List<Map.Entry<String, Long>> topProdutos = contagemProdutos.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(5)

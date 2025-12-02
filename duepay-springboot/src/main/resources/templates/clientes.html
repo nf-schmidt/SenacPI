@@ -34,10 +34,12 @@
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(listaClientes)}">
-                    <td colspan="4" class="text-center text-muted py-4">
+                    <td colspan="4" class="text-center text-muted py-5">
+                        <i class="fas fa-users fa-3x mb-3 d-block opacity-25"></i>
                         <em>Nenhum cliente cadastrado.</em>
                     </td>
                 </tr>
+
                 <tr th:each="cliente : ${listaClientes}">
                     <td th:text="${cliente.nome}">Nome</td>
                     <td th:text="${cliente.email}">Email</td>
@@ -95,7 +97,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Limpa para criar novo
     function limparModal() {
         document.getElementById('idCliente').value = '';
         document.getElementById('nomeCliente').value = '';
@@ -104,7 +105,6 @@
         document.getElementById('modalTitulo').innerText = 'Novo Cliente';
     }
 
-    // Preenche para editar
     function prepararEdicao(id, nome, email, telefone) {
         document.getElementById('idCliente').value = id;
         document.getElementById('nomeCliente').value = nome;
@@ -113,7 +113,6 @@
         document.getElementById('modalTitulo').innerText = 'Editar Cliente';
     }
 
-    // Máscara de Telefone (XX) XXXXX-XXXX
     function mascaraTelefone(input) {
         let v = input.value.replace(/\D/g, "");
         v = v.replace(/^(\d{2})(\d)/g, "($1) $2");

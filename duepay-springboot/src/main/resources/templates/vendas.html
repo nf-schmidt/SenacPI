@@ -5,7 +5,12 @@
     <title>DuePay - Vendas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .ts-dropdown { z-index: 999999 !important; }
+        .ts-wrapper.plugin-remove_button .item .remove { border-left: 1px solid #d0d0d0; }
+    </style>
 </head>
 <body>
 
@@ -22,7 +27,7 @@
     <div class="panel">
         <div class="panel-header d-flex justify-content-between align-items-center">
             <h5 class="fw-bold m-0">Histórico de Vendas</h5>
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalVenda" onclick="limparModal()">
+            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalNovaVenda()">
                 <i class="fas fa-plus"></i> Nova Venda
             </button>
         </div>
@@ -41,6 +46,13 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr th:if="${#lists.isEmpty(listaVendas)}">
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <i class="fas fa-shopping-basket fa-3x mb-3 d-block opacity-25"></i>
+                        <em>Nenhuma venda registrada.</em>
+                    </td>
+                </tr>
+
                 <tr th:each="venda : ${listaVendas}">
                     <td th:text="'#' + ${venda.id}">ID</td>
                     <td>
@@ -54,10 +66,10 @@
                     <td>
                         <button class="btn btn-sm btn-outline-primary me-2"
                                 th:attr="onclick='prepararEdicao(' + ${venda.id} + ', ' + (${venda.cliente != null} ? ${venda.cliente.id} : 0) + ', ' + ${venda.produto.id} + ', ' + ${venda.quantidade} + ')'"
-                                data-bs-toggle="modal" data-bs-target="#modalVenda" title="Editar">
+                                title="Editar">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <a th:href="@{/vendas/deletar/{id}(id=${venda.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancelar venda e estornar estoque?')">
+                        <a th:href="@{/vendas/deletar/{id}(id=${venda.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancelar venda?')">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
@@ -82,7 +94,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Cliente</label>
-                        <select id="selectCliente" name="cliente" class="form-select">
+                        <select id="selectCliente" name="cliente">
                             <option value="0">Cliente Balcão (Não Identificado)</option>
                             <option th:each="cli : ${todosClientes}" th:value="${cli.id}" th:text="${cli.nome}"></option>
                         </select>
@@ -90,7 +102,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Produto</label>
-                        <select id="selectProduto" name="produto" class="form-select" required onchange="calcularTotal()">
+                        <select id="selectProduto" name="produto" required>
                             <option value="" selected disabled data-preco="0">Selecione...</option>
                             <option th:each="prod : ${todosProdutos}"
                                     th:value="${prod.id}"
@@ -120,20 +132,59 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
 <script>
+    var tomSelectCliente;
+    var tomSelectProduto;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        tomSelectCliente = new TomSelect("#selectCliente", {
+            create: false,
+            dropdownParent: 'body',
+            sortField: { field: "text", direction: "asc" },
+            placeholder: "Digite para buscar...",
+            allowEmptyOption: true,
+            plugins: ['no_backspace_delete']
+        });
+
+        tomSelectProduto = new TomSelect("#selectProduto", {
+            create: false,
+            dropdownParent: 'body',
+            sortField: { field: "text", direction: "asc" },
+            placeholder: "Digite para buscar...",
+            onChange: function(value) {
+                calcularTotal();
+            }
+        });
+    });
+
+    function abrirModalNovaVenda() {
+        limparModal();
+        var modal = new bootstrap.Modal(document.getElementById('modalVenda'));
+        modal.show();
+    }
+
     function calcularTotal() {
-        const selectProd = document.getElementById('selectProduto');
+        const idProdutoSelecionado = tomSelectProduto.getValue();
         const qtd = document.getElementById('qtdVenda').value;
-        const opcao = selectProd.options[selectProd.selectedIndex];
-        const preco = opcao && opcao.getAttribute('data-preco') ? opcao.getAttribute('data-preco') : 0;
+
+        let preco = 0;
+        if (idProdutoSelecionado) {
+            const option = document.querySelector(`#selectProduto option[value="${idProdutoSelecionado}"]`);
+            if (option) {
+                preco = option.getAttribute('data-preco') || 0;
+            }
+        }
+
         const total = (preco * qtd);
         document.getElementById('totalDisplay').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
     function limparModal() {
         document.getElementById('idVenda').value = '';
-        document.getElementById('selectCliente').value = '0';
-        document.getElementById('selectProduto').selectedIndex = 0;
+        if(tomSelectCliente) tomSelectCliente.clear();
+        if(tomSelectProduto) tomSelectProduto.clear();
         document.getElementById('qtdVenda').value = 1;
         document.getElementById('totalDisplay').innerText = 'R$ 0,00';
         document.getElementById('modalTitulo').innerText = 'Nova Venda';
@@ -141,11 +192,19 @@
 
     function prepararEdicao(id, clienteId, produtoId, qtd) {
         document.getElementById('idVenda').value = id;
-        document.getElementById('selectCliente').value = clienteId || 0;
-        document.getElementById('selectProduto').value = produtoId;
+        if(tomSelectCliente) {
+            if (clienteId && clienteId !== 0) {
+                tomSelectCliente.setValue(clienteId);
+            } else {
+                tomSelectCliente.setValue('0');
+            }
+        }
+        if(tomSelectProduto) tomSelectProduto.setValue(produtoId);
         document.getElementById('qtdVenda').value = qtd;
         document.getElementById('modalTitulo').innerText = 'Editar Venda';
         calcularTotal();
+        var modal = new bootstrap.Modal(document.getElementById('modalVenda'));
+        modal.show();
     }
 </script>
 </body>

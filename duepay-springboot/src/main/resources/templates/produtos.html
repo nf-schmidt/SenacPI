@@ -2,7 +2,7 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>DuePay - Produtos</title>
+    <title>DuePay - Estoque</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -35,29 +35,30 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(listaProdutos)}">
                     <td colspan="4" class="text-center text-muted py-5">
-                        <i class="fas fa-box-open fa-2x mb-3 d-block"></i>
+                        <i class="fas fa-boxes fa-3x mb-3 d-block opacity-25"></i>
                         <em>Nenhum produto cadastrado no estoque.</em>
                     </td>
                 </tr>
 
-                <tr th:each="produto : ${listaProdutos}">
-                    <td th:text="${produto.nome}" class="fw-semibold"></td>
-                    <td th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                <tr th:each="prod : ${listaProdutos}">
                     <td>
-                                <span class="badge"
-                                      th:classappend="${produto.estoque < 5} ? 'bg-danger' : 'bg-success'"
-                                      th:text="${produto.estoque}">0</span>
+                        <span th:text="${prod.nome}" class="fw-bold">Nome</span>
+                        <span th:unless="${prod.ativo}" class="badge bg-danger ms-2">Inativo</span>
+                    </td>
+                    <td th:text="'R$ ' + ${#numbers.formatDecimal(prod.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+                    <td>
+                        <span th:if="${prod.estoque > 10}" th:text="${prod.estoque}" class="badge bg-success rounded-pill">0</span>
+                        <span th:if="${prod.estoque <= 10 && prod.estoque > 0}" th:text="${prod.estoque}" class="badge bg-warning text-dark rounded-pill">0</span>
+                        <span th:if="${prod.estoque == 0}" class="badge bg-danger rounded-pill">Esgotado</span>
                     </td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary me-2"
-                                th:attr="onclick='prepararEdicao(' + ${produto.id} + ', \'' + ${produto.nome} + '\', ' + ${produto.preco} + ', ' + ${produto.estoque} + ')'"
-                                data-bs-toggle="modal" data-bs-target="#modalProduto" title="Editar">
+                                th:attr="onclick='prepararEdicao(' + ${prod.id} + ', \'' + ${prod.nome} + '\', ' + ${prod.preco} + ', ' + ${prod.estoque} + ')'"
+                                title="Editar">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
-
-                        <a th:href="@{/produtos/deletar/{id}(id=${produto.id})}"
-                           class="btn btn-sm btn-outline-danger"
-                           onclick="return confirm('Tem certeza que deseja excluir este item?')" title="Excluir">
+                        <a th:href="@{/produtos/deletar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Tem certeza? O produto ficará inativo.')" title="Excluir">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
@@ -75,24 +76,23 @@
                 <h5 class="modal-title fw-bold" id="modalTitulo">Novo Produto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
             <form th:action="@{/produtos/salvar}" method="post">
                 <div class="modal-body">
                     <input type="hidden" id="idProduto" name="id">
 
                     <div class="mb-3">
                         <label class="form-label">Nome do Produto</label>
-                        <input type="text" id="nomeProduto" name="nome" class="form-control" placeholder="Ex: Caneta Bic Azul" required>
+                        <input type="text" id="nomeProduto" name="nome" class="form-control" required placeholder="Ex: Caneta Azul Bic">
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Preço (R$)</label>
-                            <input type="number" id="precoProduto" step="0.01" name="preco" class="form-control" placeholder="0,00" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Estoque Atual</label>
-                            <input type="number" id="estoqueProduto" name="estoque" class="form-control" placeholder="0" required>
-                        </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Preço (R$)</label>
+                        <input type="number" id="precoProduto" name="preco" class="form-control" step="0.01" min="0" required placeholder="Ex: 2.50">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Quantidade em Estoque</label>
+                        <input type="number" id="estoqueProduto" name="estoque" class="form-control" min="0" required placeholder="Ex: 100">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -105,26 +105,24 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // Função 1: Limpa o modal para criar um NOVO produto
     function limparModal() {
-        document.getElementById('idProduto').value = ''; // ID vazio = Backend cria novo
+        document.getElementById('idProduto').value = '';
         document.getElementById('nomeProduto').value = '';
         document.getElementById('precoProduto').value = '';
         document.getElementById('estoqueProduto').value = '';
         document.getElementById('modalTitulo').innerText = 'Novo Produto';
     }
 
-    // Função 2: Preenche o modal para EDITAR um produto existente
     function prepararEdicao(id, nome, preco, estoque) {
-        document.getElementById('idProduto').value = id; // ID preenchido = Backend atualiza
+        document.getElementById('idProduto').value = id;
         document.getElementById('nomeProduto').value = nome;
         document.getElementById('precoProduto').value = preco;
         document.getElementById('estoqueProduto').value = estoque;
         document.getElementById('modalTitulo').innerText = 'Editar Produto';
+        var modal = new bootstrap.Modal(document.getElementById('modalProduto'));
+        modal.show();
     }
 </script>
-
 </body>
 </html>
