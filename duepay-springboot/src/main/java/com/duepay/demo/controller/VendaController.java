@@ -5,6 +5,7 @@ import com.duepay.demo.model.Venda;
 import com.duepay.demo.repository.ClienteRepository;
 import com.duepay.demo.repository.ProdutoRepository;
 import com.duepay.demo.repository.VendaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,40 +19,63 @@ import java.time.LocalDate;
 public class VendaController {
 
     @Autowired private VendaRepository vendaRepo;
-    @Autowired private ClienteRepository clienteRepo; // Para listar no menu
-    @Autowired private ProdutoRepository produtoRepo; // Para listar e baixar estoque
+    @Autowired private ClienteRepository clienteRepo;
+    @Autowired private ProdutoRepository produtoRepo;
 
     @GetMapping("/vendas")
     public String listarVendas(Model model) {
         model.addAttribute("listaVendas", vendaRepo.findAll());
-        // Envia as listas para preencher os <select> no HTML
         model.addAttribute("todosClientes", clienteRepo.findAll());
+
+        // CORREÇÃO AQUI: Usamos findAll() pois o método findByAtivoTrue não existe mais no seu repositório
         model.addAttribute("todosProdutos", produtoRepo.findAll());
+
         return "vendas";
     }
 
     @PostMapping("/vendas/salvar")
+    @Transactional // Garante a segurança do estoque
     public String salvarVenda(Venda venda) {
-        // 1. Carrega o produto real do banco para checar o estoque atual
-        // (O objeto 'venda' veio do formulário apenas com o ID do produto selecionado)
+
+        // 1. Tratamento Cliente Balcão (Se ID for 0 ou nulo, vira null no banco)
+        if (venda.getCliente() != null && (venda.getCliente().getId() == null || venda.getCliente().getId() == 0)) {
+            venda.setCliente(null);
+        }
+
+        // 2. LÓGICA DE EDIÇÃO: Se já tem ID, devolvemos o estoque antigo
+        if (venda.getId() != null) {
+            Venda vendaAntiga = vendaRepo.findById(venda.getId()).orElse(null);
+            if (vendaAntiga != null) {
+                Produto prodAntigo = vendaAntiga.getProduto();
+                // Devolve a quantidade antiga para o estoque
+                prodAntigo.setEstoque(prodAntigo.getEstoque() + vendaAntiga.getQuantidade());
+                produtoRepo.save(prodAntigo);
+
+                // Mantém a data original
+                if (venda.getData() == null) {
+                    venda.setData(vendaAntiga.getData());
+                }
+            }
+        }
+
+        // 3. LÓGICA DE VENDA (Baixa no Estoque)
         Produto produtoReal = produtoRepo.findById(venda.getProduto().getId()).orElse(null);
 
         if (produtoReal != null) {
-            // LÓGICA DE ESTOQUE
+            // Calcula novo estoque
             int novaQuantidade = produtoReal.getEstoque() - venda.getQuantidade();
 
             if (novaQuantidade < 0) {
-                // TODO: Poderíamos enviar um erro para a tela aqui (Estoque Insuficiente)
                 return "redirect:/vendas?erro=estoque";
             }
 
-            // Atualiza o estoque do produto e salva
+            // Atualiza o produto
             produtoReal.setEstoque(novaQuantidade);
             produtoRepo.save(produtoReal);
 
-            // Preenche os dados automáticos da venda
-            venda.setProduto(produtoReal); // Garante que a venda linkou com o produto certo
-            venda.setValorUnitario(produtoReal.getPreco()); // Usa o preço cadastrado no produto
+            // Atualiza a venda com preços reais
+            venda.setProduto(produtoReal);
+            venda.setValorUnitario(produtoReal.getPreco());
             venda.setValorTotal(venda.getQuantidade() * produtoReal.getPreco());
 
             if (venda.getData() == null) {
@@ -65,10 +89,17 @@ public class VendaController {
     }
 
     @GetMapping("/vendas/deletar/{id}")
+    @Transactional
     public String deletarVenda(@PathVariable Long id) {
-        // Opcional: Se cancelar a venda, devolve o produto para o estoque?
-        // Por enquanto, apenas deletamos o registro da venda.
-        vendaRepo.deleteById(id);
+        Venda venda = vendaRepo.findById(id).orElse(null);
+        if (venda != null) {
+            // Se deletar, devolve os itens para o estoque
+            Produto produto = venda.getProduto();
+            produto.setEstoque(produto.getEstoque() + venda.getQuantidade());
+            produtoRepo.save(produto);
+
+            vendaRepo.deleteById(id);
+        }
         return "redirect:/vendas";
     }
 }
