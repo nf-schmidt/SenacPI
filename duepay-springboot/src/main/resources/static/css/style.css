@@ -1,58 +1,110 @@
-/* src/main/resources/static/css/style.css */
+:root {
+    --sidebar-bg: #1e293b;
+    --active-color: #3b82f6;
+    --bg-light: #f8fafc;
+    --text-dark: #334155;
+}
+
 body {
-    background-color: #f8f9fa; /* Fundo cinza claro igual ao print */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--text-dark);
 }
 
-/* Menu Lateral (Sidebar) */
+/* Sidebar */
 .sidebar {
-    min-height: 100vh;
-    background-color: #1e293b; /* Azul escuro do seu print */
-    color: white;
-    width: 250px;
+    height: 100vh;
+    width: 260px;
     position: fixed;
-}
-
-.sidebar a {
-    color: #cbd5e1;
-    text-decoration: none;
-    padding: 10px 20px;
-    display: block;
-    transition: 0.3s;
-}
-
-.sidebar a:hover, .sidebar a.active {
-    background-color: #3b82f6; /* Azul destaque do botão selecionado */
+    top: 0;
+    left: 0;
+    background-color: var(--sidebar-bg);
     color: white;
-    border-radius: 5px;
-    margin: 0 10px;
+    padding-top: 25px;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+    z-index: 100;
 }
 
-.brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 20px;
+.sidebar-brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    padding: 0 25px 25px 25px;
+    letter-spacing: 1px;
+    color: white;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.nav-link {
+    color: #94a3b8;
+    padding: 14px 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.nav-link:hover {
+    color: white;
+    background-color: rgba(255,255,255,0.03);
+}
+
+.nav-link.active {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    border-left-color: #60a5fa;
+}
+
+/* Conteúdo */
+.content {
+    margin-left: 260px;
+    padding: 30px 40px;
+}
+
+/* Cards KPI */
+.card-kpi {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    transition: transform 0.2s;
+}
+
+.card-kpi:hover {
+    transform: translateY(-3px);
+}
+
+.kpi-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
 }
 
-/* Conteúdo Principal */
-.main-content {
-    margin-left: 250px; /* Mesma largura da sidebar */
-    padding: 20px;
+/* Painéis e Tabelas */
+.panel {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
 }
 
-.card-stat {
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.card-header-custom {
-    background-color: white;
-    border-bottom: 1px solid #eee;
-    padding: 15px;
-    font-weight: bold;
-    font-size: 1.2rem;
+.panel-header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 15px;
 }

@@ -1,0 +1,19 @@
+<div th:fragment="sidebar(activePage)" class="sidebar d-flex flex-column">
+    <div class="sidebar-brand">
+        <i class="fas fa-store"></i> DuePay
+    </div>
+    <nav class="nav flex-column mt-3">
+        <a href="/" class="nav-link" th:classappend="${activePage == 'dashboard'} ? 'active'">
+            <i class="fas fa-chart-line" style="width: 20px;"></i> Dashboard
+        </a>
+        <a href="/vendas" class="nav-link" th:classappend="${activePage == 'vendas'} ? 'active'">
+            <i class="fas fa-shopping-cart" style="width: 20px;"></i> Vendas
+        </a>
+        <a href="/clientes" class="nav-link" th:classappend="${activePage == 'clientes'} ? 'active'">
+            <i class="fas fa-users" style="width: 20px;"></i> Clientes
+        </a>
+        <a href="/produtos" class="nav-link" th:classappend="${activePage == 'produtos'} ? 'active'">
+            <i class="fas fa-box" style="width: 20px;"></i> Produtos
+        </a>
+    </nav>
+</div>
