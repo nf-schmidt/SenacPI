@@ -8,18 +8,6 @@
 
 > Um sistema web completo para gerenciamento de vendas, controle de estoque e cadastro de clientes, desenvolvido com **Spring Boot** e **Thymeleaf**.
 
----
-
-## 📸 Screenshots
-
-*(Espaço reservado para você colocar prints do seu sistema funcionando)*
-
-| Dashboard | Nova Venda |
-|-----------|------------|
-| ![Dashboard](https://placehold.co/600x400?text=Print+do+Dashboard) | ![Vendas](https://placehold.co/600x400?text=Print+de+Vendas) |
-
----
-
 ## 🚀 Funcionalidades
 
 O sistema foi projetado para cobrir todo o fluxo de uma papelaria real:
