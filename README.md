@@ -1,93 +1,68 @@
-Projeto Integrador: Gestão de Papelaria (DuePay)
+# 🏪 DuePay - Sistema de Gestão para Papelaria
 
-Este repositório contém o código-fonte do front-end para o sistema de gestão da Papelaria DuePay, desenvolvido como parte do Projeto Integrador da faculdade.
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.0-green)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Frontend-blue)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple)
+![Status](https://img.shields.io/badge/Status-Concluído-success)
 
-O objetivo principal é criar uma interface de usuário (UI) moderna, limpa e eficiente, que segue os princípios de usabilidade de Nielsen, para consumir um back-end (atualmente em desenvolvimento) construído em Spring Boot.
+> Um sistema web completo para gerenciamento de vendas, controle de estoque e cadastro de clientes, desenvolvido com **Spring Boot** e **Thymeleaf**.
 
-Status do Projeto: Em Desenvolvimento (Fase 1 - Front-end Concluída)
+---
 
-🚀 Filosofia de Design e Princípios de Nielsen
+## 📸 Screenshots
 
-A diretriz central deste projeto é a aderência às 10 Heurísticas de Usabilidade de Nielsen. Em vez de adicionar funcionalidades desnecessárias, o foco é a clareza, a eficiência e a prevenção de erros.
+*(Espaço reservado para você colocar prints do seu sistema funcionando)*
 
-H1: Visibilidade do Status: O usuário sempre sabe o que está acontecendo.
+| Dashboard | Nova Venda |
+|-----------|------------|
+| ![Dashboard](https://placehold.co/600x400?text=Print+do+Dashboard) | ![Vendas](https://placehold.co/600x400?text=Print+de+Vendas) |
 
-Exemplo: Os KPIs no Dashboard são atualizados em tempo real (Total de Clientes, Produtos) assim que um novo item é criado.
+---
 
-H3: Controle e Liberdade do Usuário:
+## 🚀 Funcionalidades
 
-Exemplo: O usuário pode navegar livremente entre as seções (Dashboard, Vendas, etc.) e pode "sair" de ações indesejadas (ex: fechar um modal clicando fora ou no botão "Cancelar").
+O sistema foi projetado para cobrir todo o fluxo de uma papelaria real:
 
-H5: Prevenção de Erros: A interface previne ativamente que o usuário cometa erros.
+### 📊 Dashboard Interativo
+- **KPIs em Tempo Real:** Total de clientes, itens em estoque e faturamento mensal.
+- **Gráficos Dinâmicos:** Acompanhamento visual das vendas por dia (Chart.js).
+- **Ranking:** Lista automática dos 5 produtos mais vendidos.
 
-Exemplo: O formulário de cliente aplica uma máscara de telefone (XX) XXXXX-XXXX em tempo real, garantindo que apenas dados válidos sejam inseridos.
+### 📦 Controle de Estoque (Produtos)
+- **CRUD Completo:** Criar, Listar, Editar e Excluir produtos.
+- **Baixa Automática:** O estoque é reduzido automaticamente a cada venda realizada.
+- **Alertas Visuais:** Produtos com estoque baixo (< 5) aparecem destacados em vermelho.
+- **Soft Delete:** Produtos excluídos não somem do histórico de vendas passadas.
 
-Exemplo: A exclusão de um item só ocorre após uma caixa de diálogo de confirmação.
+### 💰 Gestão de Vendas
+- **Cálculo Automático:** O sistema calcula o valor total com base na quantidade e preço unitário.
+- **Venda Rápida (Balcão):** Possibilidade de registrar vendas sem cadastro prévio de cliente.
+- **Histórico Detalhado:** Listagem completa com data, cliente e valores.
 
-H7: Flexibilidade e Eficiência de Uso:
+### 👥 Gestão de Clientes
+- **Cadastro Completo:** Nome, e-mail e telefone (com máscara de formatação automática).
+- **Proteção de Dados:** Ao excluir um cliente, o histórico de vendas dele é preservado (anonimizado).
 
-Exemplo: As barras de busca contextuais (em Clientes, Produtos, etc.) permitem que usuários experientes encontrem itens rapidamente sem rolar a lista.
+---
 
-H8: Estética e Design Minimalista:
+## 🛠️ Tecnologias Utilizadas
 
-Exemplo: A interface foi simplificada, removendo ruídos (ex: "Olá, Jonas", sinos de notificação) para focar apenas nas tarefas essenciais de gestão.
+- **Backend:** Java 17, Spring Boot (Web, Data JPA, DevTools).
+- **Frontend:** Thymeleaf (Renderização Server-Side), HTML5, CSS3.
+- **Estilização:** Bootstrap 5 (Layout Responsivo e Modais).
+- **Scripts:** JavaScript Vanilla + Chart.js (Gráficos).
+- **Banco de Dados:** H2 Database (Banco em memória para desenvolvimento rápido).
 
-✨ Features Atuais (Front-End)
+---
 
-Todo o CRUD (Create, Read, Delete) e a lógica de negócios estão atualmente simulados localmente via JavaScript, prontos para serem substituídos por chamadas de API.
+## ⚙️ Como Rodar o Projeto
 
-Navegação SPA (Single Page Application): O JavaScript gerencia a troca de "páginas" (Dashboard, Vendas, etc.) sem recarregar o navegador, proporcionando uma experiência de usuário fluida.
+### Pré-requisitos
+- Java JDK 17 instalado.
+- Maven (ou usar o wrapper incluso no projeto).
 
-Dashboard de KPIs: Uma tela inicial que exibe métricas vitais de negócios (Total de Clientes, Total de Produtos, Vendas).
-
-Design Responsivo: A interface se adapta a dispositivos móveis, com um menu lateral ("hamburger menu") funcional.
-
-CRUD (Create, Read, Delete):
-
-Create: Modais de pop-up para cadastrar novos Clientes, Produtos e Vendas, com validação de formulário (campos obrigatórios, type="email", min="0.01").
-
-Read: Listagem e filtragem (busca) em tempo real em todas as tabelas.
-
-Delete: Exclusão de qualquer item da tabela, com uma etapa de confirmação para prevenir acidentes.
-
-Validação de Input: Máscara de telefone (XX) XXXXX-XXXX aplicada no formulário de cliente.
-
-🛠️ Tecnologias Utilizadas
-
-HTML5: Estrutura semântica, acessível e limpa.
-
-CSS3: Estilização customizada (sem frameworks) utilizando Flexbox e Grid para um layout robusto e responsivo.
-
-JavaScript (ES6+):
-
-Manipulação moderna do DOM.
-
-Uso do padrão Delegação de Eventos para um código limpo, eficiente e escalável (veja js/app.js).
-
-Lógica de CRUD local (simulação de front-end).
-
-🏃 Como Executar
-
-Este é um projeto front-end estático. Não é necessária nenhuma instalação de dependências.
-
-Clone este repositório para a sua máquina local.
-
-Abra a pasta do projeto.
-
-Abra o arquivo index.html diretamente no seu navegador de preferência.
-
-🔮 Próximos Passos (Fase 2 - Integração)
-
-O próximo grande objetivo é conectar esta interface ao back-end Spring Boot.
-
-Refatorar o js/app.js: Substituir a lógica de CRUD local (adicionar/remover linhas da tabela) por chamadas de API (fetch) aos endpoints do Spring Boot.
-
-POST /api/clientes (ao salvar o formulário de novo cliente)
-
-GET /api/clientes (ao carregar a página de clientes)
-
-DELETE /api/clientes/{id} (ao clicar em excluir)
-
-...e assim por diante para Produtos e Vendas.
-
-Implementar o "Update" (Editar): Adicionar a funcionalidade de edição, que não foi incluída na simulação de front-end.
+### Passo a Passo
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/SEU-USUARIO/duepay-sistema.git](https://github.com/SEU-USUARIO/duepay-sistema.git)
