@@ -27,8 +27,8 @@ public class VendaController {
         model.addAttribute("listaVendas", vendaRepo.findAll());
         model.addAttribute("todosClientes", clienteRepo.findAll());
 
-        // CORREÇÃO AQUI: Usamos findAll() pois o método findByAtivoTrue não existe mais no seu repositório
-        model.addAttribute("todosProdutos", produtoRepo.findAll());
+        // MUDANÇA AQUI: Usa findByAtivoTrue() para listar só produtos ativos no menu
+        model.addAttribute("todosProdutos", produtoRepo.findByAtivoTrue());
 
         return "vendas";
     }

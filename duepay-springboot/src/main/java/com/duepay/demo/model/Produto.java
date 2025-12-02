@@ -6,11 +6,15 @@ import jakarta.persistence.*;
 public class Produto {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private Double preco;
     private Integer estoque;
 
-    // Getters e Setters (Essenciais!)
+    // NOVO CAMPO: true = visível, false = "deletado"
+    private boolean ativo = true;
+
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNome() { return nome; }
@@ -19,4 +23,8 @@ public class Produto {
     public void setPreco(Double preco) { this.preco = preco; }
     public Integer getEstoque() { return estoque; }
     public void setEstoque(Integer estoque) { this.estoque = estoque; }
+
+    // Novos Getters/Setters do campo ativo
+    public boolean isAtivo() { return ativo; }
+    public void setAtivo(boolean ativo) { this.ativo = ativo; }
 }
