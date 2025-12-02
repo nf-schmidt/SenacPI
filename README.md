@@ -1,56 +1,46 @@
 # 🏪 DuePay - Sistema de Gestão para Papelaria
 
-![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.0-green)
-![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Frontend-blue)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple)
-![Status](https://img.shields.io/badge/Status-Concluído-success)
+![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3-green?style=for-the-badge&logo=spring&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?style=for-the-badge&logo=mysql&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Frontend-lightgrey?style=for-the-badge&logo=thymeleaf&logoColor=green)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-> Um sistema web completo para gerenciamento de vendas, controle de estoque e cadastro de clientes, desenvolvido com **Spring Boot** e **Thymeleaf**.
+> **DuePay** é um sistema web fullstack para gerenciamento de vendas, controle de estoque inteligente e fluxo de caixa, desenvolvido com Java Spring Boot e persistência em MySQL.
 
-## 🚀 Funcionalidades
+## 🚀 Funcionalidades Principais
 
-O sistema foi projetado para cobrir todo o fluxo de uma papelaria real:
+### 📊 Dashboard Estratégico
+- **Dados Reais:** Os cards de "Total de Clientes", "Itens Diferentes" e "Faturamento" são calculados diretamente do banco de dados.
+- **Gráfico Temporal:** Acompanhamento visual do faturamento agrupado por dia (Chart.js).
+- **Ranking de Produtos:** Lista automática dos 5 itens mais vendidos, baseada na soma real das quantidades vendidas.
 
-### 📊 Dashboard Interativo
-- **KPIs em Tempo Real:** Total de clientes, itens em estoque e faturamento mensal.
-- **Gráficos Dinâmicos:** Acompanhamento visual das vendas por dia (Chart.js).
-- **Ranking:** Lista automática dos 5 produtos mais vendidos.
+### 💰 Gestão de Vendas (Smart Sales)
+- **Busca Avançada (Autocomplete):** Integração com **Tom Select** para pesquisar clientes e produtos digitando o nome, sem precisar rolar listas gigantes.
+- **Cálculo Automático:** O valor total é atualizado instantaneamente no frontend ao alterar a quantidade.
+- **Controle de Estoque:** - A venda só é permitida se houver estoque suficiente. - A baixa no estoque do produto é automática após a venda.
+- **Edição Inteligente:** Ao editar uma venda (ex: mudar quantidade), o sistema "estorna" o estoque antigo e recalcula a nova baixa automaticamente.
+- **Venda Balcão:** Suporte nativo para vendas a clientes não cadastrados (anônimos).
 
-### 📦 Controle de Estoque (Produtos)
-- **CRUD Completo:** Criar, Listar, Editar e Excluir produtos.
-- **Baixa Automática:** O estoque é reduzido automaticamente a cada venda realizada.
-- **Alertas Visuais:** Produtos com estoque baixo (< 5) aparecem destacados em vermelho.
-- **Soft Delete:** Produtos excluídos não somem do histórico de vendas passadas.
-
-### 💰 Gestão de Vendas
-- **Cálculo Automático:** O sistema calcula o valor total com base na quantidade e preço unitário.
-- **Venda Rápida (Balcão):** Possibilidade de registrar vendas sem cadastro prévio de cliente.
-- **Histórico Detalhado:** Listagem completa com data, cliente e valores.
+### 📦 Controle de Produtos
+- **CRUD Completo:** Cadastro, Leitura, Edição e Exclusão.
+- **Soft Delete (Exclusão Lógica):** Produtos excluídos somem da lista e do menu de vendas, mas permanecem no banco de dados para não quebrar o histórico de relatórios passados.
+- **Indicadores Visuais:** Badges coloridos indicam estoque baixo (< 10) ou esgotado.
 
 ### 👥 Gestão de Clientes
-- **Cadastro Completo:** Nome, e-mail e telefone (com máscara de formatação automática).
-- **Proteção de Dados:** Ao excluir um cliente, o histórico de vendas dele é preservado (anonimizado).
+- **Integridade Referencial:** Ao excluir um cliente que já comprou, o sistema não quebra; ele converte as vendas antigas para "Cliente Balcão" automaticamente.
+- **Máscaras de Input:** Formatação automática para telefone `(XX) XXXXX-XXXX`.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Backend:** Java 17, Spring Boot (Web, Data JPA, DevTools).
-- **Frontend:** Thymeleaf (Renderização Server-Side), HTML5, CSS3.
-- **Estilização:** Bootstrap 5 (Layout Responsivo e Modais).
-- **Scripts:** JavaScript Vanilla + Chart.js (Gráficos).
-- **Banco de Dados:** H2 Database (Banco em memória para desenvolvimento rápido).
-
----
-
-## ⚙️ Como Rodar o Projeto
-
-### Pré-requisitos
-- Java JDK 17 instalado.
-- Maven (ou usar o wrapper incluso no projeto).
-
-### Passo a Passo
-1. **Clone o repositório:**
-   ```bash
-   git clone [https://github.com/SEU-USUARIO/duepay-sistema.git](https://github.com/SEU-USUARIO/duepay-sistema.git)
+- **Backend:** - Java 17
+  - Spring Boot 3 (Web, Data JPA, DevTools)
+  - Maven
+- **Frontend:** - Thymeleaf (Template Engine)
+  - Bootstrap 5 (UI Kit)
+  - Tom Select (Menus de busca inteligentes)
+  - Chart.js (Gráficos)
+- **Banco de Dados:** - MySQL 8 (Produção)
+  - H2 Database (Opcional para testes)
